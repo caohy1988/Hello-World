@@ -1,4 +1,4 @@
-setwd("~/datascience/GetandCleanData/Project/")
+setwd("/Data-science/Get-and-clean-data/Data/")
 train = read.csv("UCI HAR Dataset/train/X_train.txt", sep="", header=FALSE)
 train[,562] = read.csv("UCI HAR Dataset/train/Y_train.txt", sep="", header=FALSE)
 train[,563] = read.csv("UCI HAR Dataset/train/subject_train.txt", sep="", header=FALSE)
@@ -16,7 +16,7 @@ features[,2] = gsub('-std', 'Std', features[,2])
 features[,2] = gsub('[-()]', '', features[,2])
 
 # Merge training and test sets
-MergeData = rbind(training, testing)
+MergeData = rbind(train, test)
 
 # Get the data on mean and std. dev.
 colsWeWant <- grep(".*Mean.*|.*Std.*", features[,2])
@@ -25,10 +25,10 @@ features <- features[colsWeWant,]
 # Now add the last two columns "subject" and "activity"
 colsWeWant <- c(colsWeWant, 562, 563)
 # And remove the unwanted columns from MergeData
-allData <- MergeData[,colsWeWant]
-# Add the column names "features" to allData
+MergeData <- MergeData[,colsWeWant]
+# Add the column names "features" to MergeData
 colnames(MergeData) <- c(features$V2, "Activity", "Subject")
-colnames(MergeData) <- tolower(colnames(allData))
+colnames(MergeData) <- tolower(colnames(MergeData))
 
 currentActivity = 1
 for (currentActivityLabel in activityLabels$V2) {
@@ -39,7 +39,7 @@ for (currentActivityLabel in activityLabels$V2) {
 MergeData$activity <- as.factor(MergeData$activity)
 MergeData$subject <- as.factor(MergeData$subject)
 
-tidy = aggregate(allData, by=list(activity = MergeData$activity, subject=MergeData$subject), mean)
+tidyData = aggregate(allData, by=list(activity = MergeData$activity, subject=MergeData$subject), mean)
 # Remove the subject and activity column
 tidyData[,90] = NULL
 tidyData[,89] = NULL
